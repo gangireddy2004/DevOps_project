@@ -5,32 +5,32 @@ pipeline {
 
         stage('Check Docker') {
             steps {
-                bat 'docker --version'
+                sh 'docker --version'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t my-website .'
+                sh 'docker build -t my-website .'
             }
         }
 
         stage('Stop Old Container') {
             steps {
-                bat 'docker stop my-container || exit 0'
-                bat 'docker rm my-container || exit 0'
+                sh 'docker stop my-container || true'
+                sh 'docker rm my-container || true'
             }
         }
 
         stage('Run New Container') {
             steps {
-                bat 'docker run -d -p 8081:80 --name my-container my-website'
+                sh 'docker run -d -p 8081:80 --name my-container my-website'
             }
         }
 
         stage('Check Running Containers') {
             steps {
-                bat 'docker ps'
+                sh 'docker ps'
             }
         }
     }
