@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: my-website
-        image: my-website:latest
+        image: gangireddy16/my-website:v1
         imagePullPolicy: IfNotPresent
 
         ports:

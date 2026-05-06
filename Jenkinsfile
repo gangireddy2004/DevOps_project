@@ -28,10 +28,41 @@ pipeline {
             }
         }
 
+        stage('Push Docker Image') {
+            steps {
+                sh 'docker tag my-website gangireddy16/my-website:v1'
+                sh 'docker push gangireddy16/my-website:v1'
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f K8s/'
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                sh 'kubectl get pods'
+                sh 'kubectl get svc'
+            }
+        }
+
         stage('Check Running Containers') {
             steps {
                 sh 'docker ps'
             }
+        }
+    }
+
+    post {
+
+        success {
+            echo 'CI/CD Pipeline Executed Successfully'
+        }
+
+        failure {
+            echo 'Pipeline Failed'
         }
     }
 }
