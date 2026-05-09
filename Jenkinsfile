@@ -1,68 +1,53 @@
 pipeline {
-    agent any
+agent any
 
-    stages {
+```
+environment {
+    IMAGE_NAME = "gangireddy16/my-website:v1"
+}
 
-        stage('Check Docker') {
-            steps {
-                sh 'docker --version'
-            }
-        }
+stages {
 
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t my-website .'
-            }
-        }
-
-        stage('Stop Old Container') {
-            steps {
-                sh 'docker stop my-container || true'
-                sh 'docker rm my-container || true'
-            }
-        }
-
-        stage('Run New Container') {
-            steps {
-                sh 'docker run -d -p 8081:80 --name my-container my-website'
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                sh 'docker tag my-website gangireddy16/my-website:v1'
-                sh 'docker push gangireddy16/my-website:v1'
-            }
-        }
-
-        stage('Deploy to Kubernetes') {
-            steps {
-                sh 'kubectl apply -f K8s/'
-            }
-        }
-
-        stage('Verify Deployment') {
-            steps {
-                sh 'kubectl get pods'
-                sh 'kubectl get svc'
-            }
-        }
-
-        stage('Check Running Containers') {
-            steps {
-                sh 'docker ps'
-            }
+    stage('Clone Repository') {
+        steps {
+            git 'https://github.com/gangireddy2004/DevOps_project.git'
         }
     }
 
-    post {
-
-        success {
-            echo 'CI/CD Pipeline Executed Successfully'
-        }
-
-        failure {
-            echo 'Pipeline Failed'
+    stage('Build Docker Image') {
+        steps {
+            sh 'docker build -t $IMAGE_NAME .'
         }
     }
+
+    stage('Push Docker Image') {
+        steps {
+            sh 'docker push $IMAGE_NAME'
+        }
+    }
+
+    stage('Deploy to Kubernetes') {
+        steps {
+            sh 'kubectl apply -f k8s/'
+        }
+    }
+
+    stage('Verify Deployment') {
+        steps {
+            sh 'kubectl get pods'
+        }
+    }
+}
+
+post {
+    success {
+        echo 'Pipeline Success'
+    }
+
+    failure {
+        echo 'Pipeline Failed'
+    }
+}
+```
+
 }

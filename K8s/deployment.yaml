@@ -19,8 +19,8 @@ spec:
     spec:
       containers:
       - name: my-website
-        image: gangireddy16/my-website:v1
-        imagePullPolicy: IfNotPresent
+        image: my-website
+        imagePullPolicy: Never
 
         ports:
         - containerPort: 80
